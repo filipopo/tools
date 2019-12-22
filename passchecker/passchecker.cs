@@ -84,7 +84,7 @@ namespace code{
          Console.WriteLine("Pass or table generator?:");
          if (Console.ReadLine() == "table"){
             Console.Write("Numbers: ");
-            tablica ae = new tablica(Convert.ToInt32(Console.ReadLine()));
+            new tablica(Convert.ToInt32(Console.ReadLine()));
          }
          else{
             Console.Write("Input: ");
