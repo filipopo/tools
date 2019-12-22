@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace dragisa_drakula{
     class ojsa_prske{
@@ -59,7 +55,7 @@ namespace dragisa_drakula{
                 Console.WriteLine("Tacka {0}, x:{1} y:{2} z:{3}",j+1,Kruzi[j].X,Kruzi[j].Y,Kruzi[j].Z);
             }
             Console.WriteLine("Tacka {0}, x:{1} y:{2} z:{3}",n-1,Kruzi[n-1].X,Kruzi[n-1].Y,Kruzi[n-1].Z);
-			Console.WriteLine("Razdaljina izmedju najdaljih tacka je:{0}",Kruzi[0].troll(Kruzi[n-1]));
+            Console.WriteLine("Razdaljina izmedju najdaljih tacka je:{0}",Kruzi[0].troll(Kruzi[n-1]));
         }
     }
 }
