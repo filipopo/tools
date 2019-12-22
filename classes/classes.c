@@ -136,7 +136,11 @@ int main(){
 				myfile = fopen(strcat(str,".cs"), "w+");
 				fprintf(myfile,"using System;\n\nnamespace egg{\n\tclass program{\n\t\tstatic void Main(){\n\t\t\t%s\n\t\t}\n\t}\n}\n\n",oblasti[i]);
 				fclose(myfile);
-				system("dotnet run");
+				#ifdef _WIN32
+					system("dotnet new console && dotnet run && del Program.cs");
+				#else
+					system("dotnet new console && dotnet run && rm Program.cs");
+				#endif
 				printf("using System;\n\nnamespace egg{\n\tclass program{\n\t\tstatic void Main(){\n\t\t\t%s\n\t\t}\n\t}\n}\n\n",oblasti[i]);
 				break;
 			case 4:
