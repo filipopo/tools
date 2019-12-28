@@ -25,39 +25,36 @@ int main(){
     cout << "Unesite redosled a b c d e f g p:" << endl;
     cin >> order[0] >> order[1] >> order[2] >> order[3] >> order[4] >> order[5] >> order[6] >> order[7];
 
-    for (int i = 0; i<10;i++){
-        int B=0;
-        int pos=1;
-        for (int j = 0; j<8;j++){
+    for (short i = 0; i<10;i++){
+        short B=0;
+        for (short j = 0; j<8;j++){
             bool b=0;
-            if (mode == "anoda"){
+            if (mode == "anoda")
                 switch (order[j]){
-                    case 'a':b = tabela[i][0];cout << b << ' ';break;
-                    case 'b':b = tabela[i][1];cout << b << ' ';break;
-                    case 'c':b = tabela[i][2];cout << b << ' ';break;
-                    case 'd':b = tabela[i][3];cout << b << ' ';break;
-                    case 'e':b = tabela[i][4];cout << b << ' ';break;
-                    case 'f':b = tabela[i][5];cout << b << ' ';break;
-                    case 'g':b = tabela[i][6];cout << b << ' ';break;
-                    case 'p':b = tabela[i][7];cout << b << ' ';break;
+                    case 'a':b = tabela[i][0];break;
+                    case 'b':b = tabela[i][1];break;
+                    case 'c':b = tabela[i][2];break;
+                    case 'd':b = tabela[i][3];break;
+                    case 'e':b = tabela[i][4];break;
+                    case 'f':b = tabela[i][5];break;
+                    case 'g':b = tabela[i][6];break;
+                    case 'p':b = tabela[i][7];break;
                 }
-            }
-            else{
+            else
                 switch (order[j]){
-                    case 'a':b = !tabela[i][0];cout << b << ' ';break;
-                    case 'b':b = !tabela[i][1];cout << b << ' ';break;
-                    case 'c':b = !tabela[i][2];cout << b << ' ';break;
-                    case 'd':b = !tabela[i][3];cout << b << ' ';break;
-                    case 'e':b = !tabela[i][4];cout << b << ' ';break;
-                    case 'f':b = !tabela[i][5];cout << b << ' ';break;
-                    case 'g':b = !tabela[i][6];cout << b << ' ';break;
-                    case 'p':b = !tabela[i][7];cout << b << ' ';break;
+                    case 'a':b = !tabela[i][0];break;
+                    case 'b':b = !tabela[i][1];break;
+                    case 'c':b = !tabela[i][2];break;
+                    case 'd':b = !tabela[i][3];break;
+                    case 'e':b = !tabela[i][4];break;
+                    case 'f':b = !tabela[i][5];break;
+                    case 'g':b = !tabela[i][6];break;
+                    case 'p':b = !tabela[i][7];break;
                 }
-            }
-            B+=b*pos;
-            pos*=10;
+            cout << b << ' ';
+            if (b == 1)
+                B |= (1u << 7-j);
         }
-        cout << "0x" << B << ' ' << i << endl;
+        cout << "0x" << hex << B << ' ' << i << endl;
     }
-
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace dragisa_drakula{
     class ojsa_prske{
-        private int x, y, z;
+        int x, y, z;
         public int X{
             get { return x; }
             set { x = X; }

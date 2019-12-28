@@ -1,7 +1,8 @@
 *.code_workspace
+*.json
+*/obj/*
+*/bin/*
 
-passchecker/obj/*
-passchecker/bin/*
 passchecker/comb.txt
 
 7sdisplay/7sd
