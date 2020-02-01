@@ -4,7 +4,7 @@
 #ifdef __cplusplus
 #include <iostream>
 #include <fstream>
-#include <string>
+//#include <string>
 #else
 #include <stdio.h>
 #include <ctype.h>

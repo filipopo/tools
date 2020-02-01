@@ -2,7 +2,8 @@
 *.json
 */obj/*
 */bin/*
+*.pyc
 
-passchecker/comb.txt
+*.out
+comb.txt
 
-7sdisplay/7sd
