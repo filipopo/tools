@@ -1,0 +1,130 @@
+#!/bin/bash
+_pkgs="linux-lqx kdenlive-appimage ananicy-git" #xamarin-android unity-editor unreal-engine intellij-idea-ultimate-edition
+_otimize=1 #Optimize compiles.. -j$(nproc), ccache, compressxz --threads 0, preload
+_fileloc=$HOME/lqxcheck #Where to keep local files
+
+_CHROOT=$HOME/chroot #Where do you want the chroot
+_archchroot=1 #Creates an arch chroot even on Manjaro
+_branch=stable #Branch on the chroot
+_arch=x86_64 #Arch of chroot
+_repo=$_fileloc/$_branch/$_arch #if set puts resulting packages here, PKGBUILD's still go in $_fileloc/(pkg name)
+
+#Not intended to be edited after here except for upgrades :)
+IFS=' ' read -ra _pkgs <<< "$_pkgs"
+read -r distro < /etc/arch-release
+
+if [[ $EUID -ne 0 ]]; then
+	echo "Give me the root password:"
+	sudo echo "Thanks"
+fi
+
+if [ -z $_repo ]; then
+	mkdir -p $_repo > /dev/null
+fi
+mkdir -p $_fileloc > /dev/null
+cd $_fileloc
+
+(
+	echo "#"!/bin/bash
+	echo if [ ! -f "$_fileloc/lock" ]; then
+		echo touch $_fileloc/lock
+		if $_CHROOT; then
+			if [ $distro == "Manjaro Linux" ]; then
+				echo systemd-nspawn $_CHROOT/root pacman -Syu
+			else
+				echo arch-nspawn $_CHROOT/root pacman -Syu
+			fi
+		fi
+		for _pkg in "${_pkgs[@]}"; do
+			mkdir $_pkg > /dev/null
+			cd $_fileloc/$_pkg
+			echo cd $_fileloc/$_pkg
+			#git init
+			#git remote add origin https://aur.archlinux.org/$_pkg.git
+			touch PKGBUILD
+			echo mv PKGBUILD PKGBUILD0
+			echo wget -O PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$_pkg
+			#echo git pull
+			#echo for pgpkey in validpgpkeys; do
+				#echo gpg --recv-key $pgpkey > /dev/null
+			#echo done
+			#echo sed "s/$_pkg/$_pkg-bin/g" PKGBUILD
+			echo sum=$(sha256sum PKGBUILD | awk '{print $1}')
+			echo oldsum=$(sha256sum PKGBUILD0 | awk '{print $1}')
+			echo if [ $sum != $oldsum ]; then
+				if $_CHROOT; then
+					if [ $distro == "Manjaro Linux" ]; then
+						echo mkchrootpkg -r $_CHROOT/root
+					else
+						echo makechrootpkg -r $_CHROOT/root
+					fi
+				else
+					echo sudo pacman -Syu
+					echo FLAGS=\"-march=x86_64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt\"
+					echo CXXFLAGS=\"-march=x86_64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt\"
+					echo makepkg
+				fi
+				#echo cp "${pkg}-*.*" $_repo
+			fi
+		done
+		echo rm $_fileloc/lock
+	echo fi
+) > lqxcheck
+sudo mv lqxcheck /usr/bin/lqxcheck
+
+if [ ! -f "/etc/systemd/system/lqxcheck.timer" ] || [ ! -f "/etc/systemd/system/lqxcheck.service" ]; then
+	(
+		echo [Unit]
+		echo Description=Calls lqxcheck.service on boot and hourly 
+
+		echo [Timer]
+		echo OnBootSec=4min
+		echo OnUnitActiveSec=60min
+
+		echo [Install]
+		echo WantedBy=timers.target
+	) > lqxcheck.timer
+
+	(
+		echo [Unit]
+		echo Description=Makes -bin pkgs from updated coresponding packages from the AUR
+ 
+		echo [Service]
+		#echo user=$USER
+		echo ExecStart=/usr/bin/lqxcheck
+	) > lqxcheck.service
+	sudo mv lqxcheck.* /etc/systemd/system/
+	
+	if [ $distro == "Manjaro Linux" ]; then
+		sudo pacman -S base-devel manjaro-tools-pkg --needed
+	else
+		sudo pacman -S base-devel devtools --needed
+	fi
+
+	if $_CHROOT; then
+		mkdir $_CHROOT
+		if [ $distro == "Manjaro Linux" ]; then
+			if $_archchroot; then
+				sudo mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
+				sudo wget -O /etc/pacman.d/mirrorlist https://www.archlinux.org/mirrorlist/?country=all&protocol=http&protocol=https&ip_version=4&use_mirror_status=on
+			fi
+			sudo mkchroot  $_CHROOT/root base-devel
+			if $_optimize; then
+				sudo systemd-nspawn pacman -S ccache preload && $_CHROOT/root sed 's/"#"MAKEFLAGS=\"-j1\"/MAKEFLAGS=\"-j$(nproc)\"/g' /etc/makepkg.conf && sed 's/BUILDENV=(!distcc color !ccache check !sign)/BUILDENV=(!distcc color ccache check !sign)/g' /etc/makepkg.conf && sed 's/COMPRESSXZ="(xz -c -z -)"/COMPRESSXZ="(xz -c -z - --threads=0)"/g' /etc/makepkg.conf && systemctl enable --now preload
+			fi
+			if $_archchroot; then
+				sudo mv /etc/pacman.d/mirrorlist.backup /etc/pacman.d/mirrorlist
+			fi
+		else
+			sudo mkarchroot $_CHROOT/root base-devel
+			if $_optimize; then
+				sudo arch-nspawn $_CHROOT/root pacman -S ccache preload && sed 's/"#"MAKEFLAGS=\"-j1\"/MAKEFLAGS=\"-j$(nproc)\"/g' /etc/makepkg.conf && sed 's/BUILDENV=(!distcc color !ccache check !sign)/BUILDENV=(!distcc color ccache check !sign)/g' /etc/makepkg.conf && sed 's/COMPRESSXZ="(xz -c -z -)"/COMPRESSXZ="(xz -c -z - --threads=0)"/g' /etc/makepkg.conf && systemctl enable --now preload
+			fi
+		fi
+	else
+		if $_optimize; then
+			sudo pacman -S ccache preload --needed && sudo sed 's/"#"MAKEFLAGS=\"-j1\"/MAKEFLAGS=\"-j$(nproc)\"/g' /etc/makepkg.conf && sudo sed 's/BUILDENV=(!distcc color !ccache check !sign)/BUILDENV=(!distcc color ccache check !sign)/g' /etc/makepkg.conf && sudo sed 's/COMPRESSXZ="(xz -c -z -)"/COMPRESSXZ="(xz -c -z - --threads=0)"/g' /etc/makepkg.conf && sudo systemctl enable --now preload
+		fi
+	fi
+	sudo systemctl enable --now lqxcheck.timer
+fi

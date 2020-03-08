@@ -1,7 +1,7 @@
 //7 segment display configurator header file
+#include <iostream>
 
 class ssd{
-	bool target=0;
     bool table[10][8]={
         //anode values for 0-9
        //a b c d e f g dp
@@ -17,7 +17,7 @@ class ssd{
         {0,0,0,0,1,0,0,1},
     };
 
-	std::string mode, order;
+	std::string mode, order="";
 	short B[10]={0,0,0,0,0,0,0,0,0,0};
 
 	void calculate();
