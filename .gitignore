@@ -3,6 +3,7 @@
 */obj/*
 */bin/*
 *.pyc
+*.class
 
 *.out
 comb.txt
