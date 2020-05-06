@@ -8,19 +8,19 @@ from asciimatics.effects import Print, Scroll
 from asciimatics.renderers import ImageFile, ColourImageFile
 
 try:
-	mode=argv[1]
+	mode = argv[1]
 except IndexError:
 	try:
 		with open("art.txt") as art:
-			mode="0"
+			mode = "0"
 	except FileNotFoundError:
 		try:
 			with open("art.jpg") as art:
 				with ManagedScreen() as screen:
 					if screen.colours < 256:
-						mode="1"
+						mode = "1"
 					else:
-						mode="2"
+						mode = "2"
 		except FileNotFoundError:
 			print("You need to have an art text or image file in the same folder :)")
 			sleep(2)
@@ -58,7 +58,7 @@ def zero(screen=None):
 			#screen.print_at(" "+str(i-line)+" "+str(i)+" "+str(line),pic_end+pic,pos)
 			pos+=1
 		screen.refresh()
-		#sleep(0.05)
+		sleep(0.05)
 		line=(line+1)%len(lines)
 
 @try_kb
@@ -98,6 +98,7 @@ switcher = {
 }
 
 try:
-	switcher[mode]()
+	if __name__ == "__main__":
+		switcher[mode]()
 except KeyError:
 	print("Valid value please")

@@ -1,6 +1,6 @@
 #!/bin/bash
-_pkgs="linux-lqx kdenlive-appimage ananicy-git" #xamarin-android unity-editor unreal-engine intellij-idea-ultimate-edition
-_otimize=1 #Optimize compiles.. -j$(nproc), ccache, compressxz --threads 0, preload
+_pkgs="linux-lqx" #xamarin-android unreal-engine mysql"
+_otimize=1 #Optimize compiles.. -j$(nproc), compressxz --threads 0
 _fileloc=$HOME/lqxcheck #Where to keep local files
 
 _CHROOT=$HOME/chroot #Where do you want the chroot
@@ -22,7 +22,6 @@ if [ -z $_repo ]; then
 	mkdir -p $_repo > /dev/null
 fi
 mkdir -p $_fileloc > /dev/null
-cd $_fileloc
 
 (
 	echo "#"!/bin/bash
@@ -36,7 +35,7 @@ cd $_fileloc
 			fi
 		fi
 		for _pkg in "${_pkgs[@]}"; do
-			mkdir $_pkg > /dev/null
+			mkdir $_fileloc/$_pkg > /dev/null
 			cd $_fileloc/$_pkg
 			echo cd $_fileloc/$_pkg
 			#git init
@@ -59,7 +58,7 @@ cd $_fileloc
 						echo makechrootpkg -r $_CHROOT/root
 					fi
 				else
-					echo sudo pacman -Syu
+					#echo pacman -Syu #yes to everything
 					echo FLAGS=\"-march=x86_64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt\"
 					echo CXXFLAGS=\"-march=x86_64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt\"
 					echo makepkg
@@ -69,6 +68,7 @@ cd $_fileloc
 		done
 		echo rm $_fileloc/lock
 	echo fi
+	cd $_fileloc
 ) > lqxcheck
 sudo mv lqxcheck /usr/bin/lqxcheck
 
@@ -94,7 +94,7 @@ if [ ! -f "/etc/systemd/system/lqxcheck.timer" ] || [ ! -f "/etc/systemd/system/
 		echo ExecStart=/usr/bin/lqxcheck
 	) > lqxcheck.service
 	sudo mv lqxcheck.* /etc/systemd/system/
-	
+
 	if [ $distro == "Manjaro Linux" ]; then
 		sudo pacman -S base-devel manjaro-tools-pkg --needed
 	else
@@ -109,22 +109,18 @@ if [ ! -f "/etc/systemd/system/lqxcheck.timer" ] || [ ! -f "/etc/systemd/system/
 				sudo wget -O /etc/pacman.d/mirrorlist https://www.archlinux.org/mirrorlist/?country=all&protocol=http&protocol=https&ip_version=4&use_mirror_status=on
 			fi
 			sudo mkchroot  $_CHROOT/root base-devel
-			if $_optimize; then
-				sudo systemd-nspawn pacman -S ccache preload && $_CHROOT/root sed 's/"#"MAKEFLAGS=\"-j1\"/MAKEFLAGS=\"-j$(nproc)\"/g' /etc/makepkg.conf && sed 's/BUILDENV=(!distcc color !ccache check !sign)/BUILDENV=(!distcc color ccache check !sign)/g' /etc/makepkg.conf && sed 's/COMPRESSXZ="(xz -c -z -)"/COMPRESSXZ="(xz -c -z - --threads=0)"/g' /etc/makepkg.conf && systemctl enable --now preload
-			fi
 			if $_archchroot; then
 				sudo mv /etc/pacman.d/mirrorlist.backup /etc/pacman.d/mirrorlist
 			fi
 		else
 			sudo mkarchroot $_CHROOT/root base-devel
-			if $_optimize; then
-				sudo arch-nspawn $_CHROOT/root pacman -S ccache preload && sed 's/"#"MAKEFLAGS=\"-j1\"/MAKEFLAGS=\"-j$(nproc)\"/g' /etc/makepkg.conf && sed 's/BUILDENV=(!distcc color !ccache check !sign)/BUILDENV=(!distcc color ccache check !sign)/g' /etc/makepkg.conf && sed 's/COMPRESSXZ="(xz -c -z -)"/COMPRESSXZ="(xz -c -z - --threads=0)"/g' /etc/makepkg.conf && systemctl enable --now preload
-			fi
 		fi
+		cd $_CHROOT/root
 	else
-		if $_optimize; then
-			sudo pacman -S ccache preload --needed && sudo sed 's/"#"MAKEFLAGS=\"-j1\"/MAKEFLAGS=\"-j$(nproc)\"/g' /etc/makepkg.conf && sudo sed 's/BUILDENV=(!distcc color !ccache check !sign)/BUILDENV=(!distcc color ccache check !sign)/g' /etc/makepkg.conf && sudo sed 's/COMPRESSXZ="(xz -c -z -)"/COMPRESSXZ="(xz -c -z - --threads=0)"/g' /etc/makepkg.conf && sudo systemctl enable --now preload
-		fi
+		cd /
+	fi
+	if $_optimize; then
+		sudo sed 's/"#"MAKEFLAGS=\"-j1\"/MAKEFLAGS=\"-j$(nproc)\"/g' etc/makepkg.conf && sudo sed 's/COMPRESSXZ="(xz -c -z -)"/COMPRESSXZ="(xz -c -z - --threads=0)"/g' etc/makepkg.conf
 	fi
 	sudo systemctl enable --now lqxcheck.timer
 fi

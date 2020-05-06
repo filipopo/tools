@@ -47,7 +47,7 @@ namespace dragisa_drakula{
             Console.WriteLine("Kordinate tacka od k.pocetka:");
             for (int j = 0; j < n-1; j++){
                 for (int i = 0; i < n-j-1; i++)
-                    if ((Math.Abs(Kruzi[i].X) + Math.Abs(Kruzi[i].Y) + Math.Abs(Kruzi[i].Z)) > (Math.Abs(Kruzi[i+1].X) + Math.Abs(Kruzi[i+1].Y) + Math.Abs(Kruzi[i+1].Z))){
+                    if ((Math.Abs(Kruzi[i].X) + Math.Abs(Kruzi[i].Y) + Math.Abs(Kruzi[i].Z)) > (Math.Abs(Kruzi[i+1].X) + Math.Abs(Kruzi[i+1].Y) + Math.Abs(Kruzi[i+1].Z))) {
                         ojsa_prske p=Kruzi[i];
 					    Kruzi[i]=Kruzi[i+1];
 					    Kruzi[i+1]=p;
