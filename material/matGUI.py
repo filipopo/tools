@@ -12,7 +12,6 @@ class MainWindow(QMainWindow):
 
         # Set's window properties
         self.setMinimumSize(QSize(580, 250))
-        self.title = 'Texture swapper'
         self.setWindowTitle('Texture swapper')
 
         # The input to be sent to material.py
@@ -32,9 +31,7 @@ class MainWindow(QMainWindow):
         if map_f != '':
             src = self.list1.toPlainText().replace('\n', ',')
             dest = self.list2.toPlainText().replace('\n', ',')
-
-            # Exec?
-            system('./material.py ' + map_f + ' ' + src + ' ' + dest)
+            system('python material.py ' + map_f + ' ' + src + ' ' + dest)
 
     # Makes input fields with labels
     def addTextAndInput(self, text, x):   

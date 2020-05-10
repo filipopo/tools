@@ -3,18 +3,18 @@
 
 using namespace std;
 
-class redpill{
+class redpill {
     ofstream myfile;
-    short num=0,nbase;
-    void loopy(string pass,short pos){
-        for (short i = pos; i < pass.length()*(nbase-1); i++){
-            if ( pos < pass.length()*(nbase-1)){
+    short num = 0,nbase;
+    void loopy(string pass, short pos) {
+        for (short i = pos; i < pass.length() * (nbase - 1); i++) {
+            if (pos < pass.length() * (nbase - 1)) {
                pos++;
-               loopy(pass,pos);
+               loopy(pass, pos);
             }
 
-            //for (int j=0;j<nbase;j++){
-            cout << "OILALA " << (char)(int)pass[i] << " HARAMBE" <<endl;
+            //for (int j = 0;j < nbase;j++){
+            cout << "OILALA " << (char)(int)pass[i] << " HARAMBE" << endl;
             //}
         }
         cout << pass << endl;
@@ -23,24 +23,24 @@ class redpill{
     }
 
     public:
-        redpill(short nbase,short nums){
-            this->nbase=nbase;
+        redpill(short nbase, short nums){
+            this->nbase = nbase;
             myfile.open("comb.txt");
             string s = "0";
-            for(;nums>1;nums--)
-                s+='0';
-            loopy(s,0);
+            for(;nums > 1;nums--)
+                s += '0';
+            loopy(s, 0);
             myfile.close();
             cout << num << " Combinations" << endl;
         }
 };
 
-int main(){
+int main() {
     cout << "Input number base:" << endl;
     short nbase;
     cin >> nbase;
     cout << "Numbers: ";
     short nums;
     cin >> nums;
-    new redpill(nbase,nums);
+    redpill A(nbase, nums);
 }
