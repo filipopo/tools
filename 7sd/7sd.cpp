@@ -54,7 +54,7 @@ void ssd::calculate() {
 
 			table_b[i][j] = b;
 			if (b == 1)
-				B[i] |= (1u << 7-j); //Sets the bit on the 7-j position of the B[i] element to 1
+				B[i] |= (1u << 7 - j); //Sets the bit on the 7-j position of the B[i] element to 1
 		}
 	}
 

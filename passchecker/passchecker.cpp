@@ -1,5 +1,5 @@
-//Password strength checking program with examples for C#,C++,C
-//https://en.wikipedia.org/wiki/Truth_table#Applications_of_truth_tables_in_digital_electronics
+// Password strength checking program with examples for C#, C++, C
+// https://en.wikipedia.org/wiki/Truth_table#Applications_of_truth_tables_in_digital_electronics
 #ifdef __cplusplus
 #include <iostream>
 #include <fstream>
@@ -34,7 +34,7 @@ char modifier(char ch) {
 void special(string pass) {
    int len = pass.length();
 #else
-void special(char* pass) {
+void special(char *pass) {
    int len = strlen(pass);
 #endif
    int pos = 0;
@@ -60,7 +60,7 @@ int num = 0;
 void loopy(string pass, int pos) {
    for (int i = pos; i < pass.length(); i++) {
 #else
-void loopy(char* pass, int pos) {
+void loopy(char *pass, int pos) {
    for (int i = pos; i < strlen(pass); i++) {
 #endif
       pos++;
@@ -77,8 +77,7 @@ void loopy(char* pass, int pos) {
    myfile << pass << endl;
    #else
    printf("%s\n", pass);
-   fprintf(myfile, pass);
-   fprintf(myfile, "\n");
+   fprintf(myfile, "%s\n", pass);
    #endif
    num++;
 }
@@ -87,7 +86,7 @@ void loopy(char* pass, int pos) {
 void find(string pass) {
    myfile.open("comb.txt");
 #else
-void find(char* pass) {
+void find(char *pass) {
    myfile = fopen("comb.txt", "w+");
 #endif
    loopy(pass, 0);
