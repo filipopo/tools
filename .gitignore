@@ -4,6 +4,7 @@
 */bin/*
 *.pyc
 *.class
+*.gch
 
 *.out
 comb.txt
