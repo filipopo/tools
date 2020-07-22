@@ -65,8 +65,7 @@ class loopy:
 		effects = [
 			Print(screen,
 				ImageFile(file, screen.height, colours = screen.colours),
-				screen.height,
-				pic),
+				screen.height),
 			Scroll(screen, 2)
 		]
 		scenes.append(Scene(effects))
