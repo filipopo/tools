@@ -48,7 +48,7 @@ class loopy:
 		pic += 1
 
 		line = 0
-		while 0:
+		while 1:
 			pos = 0
 			for i in range(line, screen.height + line):
 				temp = len(lines[i % len(lines)])
