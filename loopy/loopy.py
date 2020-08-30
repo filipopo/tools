@@ -23,7 +23,9 @@ class loopy:
 			try:
 				func(self, **kwargs)
 			except KeyboardInterrupt:
-				pass #screen.clear()
+				pass
+			#finally:
+				#screen.clear()
 		return ManagedScreen(inner)
 
 	@try_kb
@@ -33,24 +35,33 @@ class loopy:
 
 		with open(file) as art:
 			lines = art.readlines()
-			pic = len(lines[0]) // 20
-			min=10 ** pic
-			max=10 * min - 1
 
+		width = 0
 		for i in range(0, len(lines)):
-			lines[i] = lines[i].split('\n')[0]
+			lines[i] = lines[i].replace('\n', '')
+			if len(lines[i]) > pic:
+				width = len(lines[i])
 
+		pic = width // 20
+		min_n = 10 ** pic
+		max_n = 10 * min_n - 1	
 		pic += 1
-		pic_end = len(lines[0]) + pic
-		line = 0
 
-		while 1:
+		line = 0
+		while 0:
 			pos = 0
 			for i in range(line, screen.height + line):
-				screen.print_at(str(randint(min, max)), 0, pos, 2)
-				screen.print_at(lines[i % len(lines)], pic, pos, i%7 + 1)
-				screen.print_at(str(randint(min, max)), pic_end, pos, 2)
-				#screen.print_at(' ' + str(i - line) + ' ' + str(i) + ' ' + str(line), pic_end + pic, pos)
+				temp = len(lines[i % len(lines)])
+				if temp:
+					pic_end = 2 * pic + temp
+					screen.print_at(str(randint(min_n, max_n)), 0, pos, 2)
+					screen.print_at(lines[i % len(lines)], pic, pos, i % 7 + 1)
+					screen.print_at(str(randint(min_n, max_n)), pic + temp, pos, 2)
+				else:
+					pic_end = 0
+
+				screen.print_at(' ' * (width - pic_end), pic_end, pos)
+				#screen.print_at(str(temp) + ' ' + str(i - line) + ' ' + str(i) + ' ' + str(line) + ' ', pic_end + 1, pos)
 				pos += 1
 			screen.refresh()
 			sleep(0.05)
