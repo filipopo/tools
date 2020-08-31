@@ -19,17 +19,17 @@ class loopy:
 				self.txts.append(file)
 
 	def try_kb(func):
-		def inner(self, **kwargs):
+		def inner(self, screen):
 			try:
-				func(self, **kwargs)
+				func(self, screen)
 			except KeyboardInterrupt:
 				pass
-			#finally:
-				#screen.clear()
+			finally:
+				screen.clear()
 		return ManagedScreen(inner)
 
 	@try_kb
-	def text(self, file = None, screen = None):
+	def text(self, screen = None, file = None):
 		if file == None:
 			file = self.txts[0]
 
@@ -39,7 +39,7 @@ class loopy:
 		width = 0
 		for i in range(0, len(lines)):
 			lines[i] = lines[i].replace('\n', '')
-			if len(lines[i]) > pic:
+			if len(lines[i]) > width:
 				width = len(lines[i])
 
 		pic = width // 20
@@ -68,7 +68,7 @@ class loopy:
 			line = (line + 1) % len(lines)
 
 	@try_kb
-	def gray(self, file = None, screen = None):
+	def gray(self, screen = None, file = None,):
 		if file == None:
 			file = self.imgs[0]
 
@@ -83,7 +83,7 @@ class loopy:
 		screen.play(scenes)
 
 	@try_kb
-	def color(self, file = None, screen = None):
+	def color(self, screen = None, file = None,):
 		if file == None:
 			file = self.imgs[0]
 
