@@ -11,7 +11,7 @@ namespace Program {
       foreach (char c in s) {
         if (d.ContainsKey(c))
           d[c]++;
-            else
+        else
           d.Add(c, 1);
       }
 
