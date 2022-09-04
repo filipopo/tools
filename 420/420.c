@@ -11,45 +11,47 @@
 #include <unistd.h>
 #endif
 
-void two(char* s, int digit) {
-	char temp[4] = "0%d";
-	if (digit > 9) {
-		for (int i = 0; i < 3; i++)
-			temp[i] = temp[i + 1];
-	}
-	sprintf(s, temp, digit);
-}
-
 int main() {
-	while (1) {
-		time_t now = time(0);
-		struct tm* timeinfo = localtime(&now);
+  char cc[34];
+  FILE *p;
+  int ch;
 
-		int hour = timeinfo->tm_hour;
-		char t[3] = "AM";
-		if (hour > 12) {
-			hour -= 12;
-			t[0] = 'P';
-		}
+  while (1) {
+    time_t now = time(0);
+    struct tm* timeinfo = localtime(&now);
 
-		char s[6];
-		hour -= 4;
-		if (hour < 0) {
-			hour = abs(hour);
-			strcpy(s, "since");
-		} else
-			strcpy(s, "until");
+    sprintf(cc, "node timeconvertor.js 12 %d:%d:%d", timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
+    p = popen(cc, "r");
+    
+    if(p == NULL) {
+      printf("Unable to open process");
+      return(1);
+    }
 
-		char h[3];
-		two(h, hour);
-		char m[3];
-		two(m, abs(timeinfo->tm_min - 20));
+    strcpy(cc, "");
+    while((ch=fgetc(p)) != EOF)
+      strncat(cc, &ch, 1);
+/*
+    char s[6];
+    hour -= 4;
+    if (hour < 0) {
+      hour = abs(hour);
+      strcpy(s, "since");
+    } else
+      strcpy(s, "until");
 
-		printf("%s:%s %s 4:20 %s\n", h, m, s, t);
-#ifdef _WIN32
-		Sleep(60000);
-#else
-		sleep(60);
-#endif
-	}
+    char h[3];
+    two(h, hour);
+    char m[3];
+    two(m, abs(timeinfo->tm_min - 20));
+
+    printf("%s %s 4:20\n", t, s);
+*/
+    pclose(p);
+    #ifdef _WIN32
+    Sleep(60000);
+    #else
+    sleep(60);
+    #endif
+  }
 }

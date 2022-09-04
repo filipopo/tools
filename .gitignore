@@ -5,7 +5,6 @@
 *.pyc
 *.class
 *.gch
-
+node_modules
 *.out
 comb.txt
-
