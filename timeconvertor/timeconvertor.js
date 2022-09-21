@@ -24,9 +24,9 @@ function to24Hour(s) {
 
 if (require.main === module) {
   let res;
-  switch (process.argv[3]) {
-    case 12: res = to12Hour(process.argv[4]); break;
-    case 24: res = to24Hour(process.argv[4]); break;
+  switch (process.argv[2]) {
+    case '12': res = to12Hour(process.argv[3]); break;
+    case '24': res = to24Hour(process.argv[3]); break;
     default: res = "Wrong number of arguments";
   }
 
