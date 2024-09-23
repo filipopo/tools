@@ -18,7 +18,7 @@ class redpill {
     modular division and each next left digit can be parsed by
     dividing by the number base and repeating the process */
     if (i >= nbase)
-      res = modifier(i / nbase) + res;
+      res = modifier(i / nbase);
 
     unsigned long temp = i % nbase;
     if (temp < 36)
