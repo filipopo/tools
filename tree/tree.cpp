@@ -5,11 +5,11 @@ using namespace std;
 
 int main() {
     int br;
-    cout << "Unesite broj jelki: ";
+    cout << "Enter number of trees: ";
     cin >> br;
 
     int num;
-    cout << "Unesite broj redova: ";
+    cout << "Enter number of rows per tree: ";
     cin >> num;
 
     int x;
